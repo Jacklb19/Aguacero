@@ -93,8 +93,9 @@ already lives in files it reads itself (the explorer), not for tiny inputs.
 
 Limits: one device and one browser so far; the server was on localhost; E2 (break-even vs.
 server SoQL per query) and E3 on a phone are still to be measured. The main-thread runner's
-own freeze is under-reported: long-task entries arrive after the run ends, so the harness
-reads 0 for it. Fixing the sampler to wait for pending entries is the next step.
+own freeze is under-reported in the published E1 file (0 ms): long-task entries arrived after
+each run ended. The sampler now also counts the open frame gap; re-run the lab for corrected
+freeze figures.
 
 ## 8. Reproduction
 

@@ -10,6 +10,8 @@ const immutable = [{ key: "Cache-Control", value: "public, max-age=31536000, imm
 const nextConfig: NextConfig = {
   // Classic caching model on purpose: cacheComponents stays off (README §2).
   poweredByHeader: false,
+  // datos.gov.co aggregates can take 20-60 s; the default 60 s per page is too tight.
+  staticPageGenerationTimeout: 300,
   async headers() {
     return [
       {

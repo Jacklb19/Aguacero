@@ -76,3 +76,9 @@ No cookie is read on the server, so SSG/ISR stay static.
 
 Pale YlGnBu classes fail 3:1 against `fog`. Every bar gets a 1px inset edge at 40% `basalt`,
 so bars meet WCAG 1.4.11 without changing the specified ramp.
+
+## 2026-09-29: ISR pages and the build timeout
+
+Vercel builds failed with "took more than 60 seconds" on `/datasets` and `/datasets/[id]`.
+`staticPageGenerationTimeout` is now 300 s, and `/datasets/[id]` returns no static params, so
+each dataset page renders on its first visit and is then cached and revalidated hourly.

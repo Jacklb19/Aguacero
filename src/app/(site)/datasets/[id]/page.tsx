@@ -4,17 +4,19 @@ import { notFound } from "next/navigation";
 import { Hyetograph } from "@/components/hyetograph/Hyetograph";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { PageIntro, ProseBlock, Section } from "@/components/layout/Prose";
-import { datasets, getDataset } from "@/config/datasets";
+import { getDataset } from "@/config/datasets";
 import { siteUrl } from "@/lib/env";
 import { getCatalogEntry, getDatasetSummary } from "@/lib/socrata/queries";
 import { bogotaDate, bogotaTime, formatNumber } from "@/lib/time";
 
 export const revalidate = 3600;
 export const maxDuration = 300;
-export const dynamicParams = false;
+// Rendered on first visit, then cached and refreshed hourly (ISR). Not prerendered at build
+// because upstream aggregates can take close to a minute. Unknown ids return 404 below.
+export const dynamicParams = true;
 
-export function generateStaticParams() {
-  return datasets.map((d) => ({ id: d.slug }));
+export function generateStaticParams(): { id: string }[] {
+  return [];
 }
 
 export async function generateMetadata({ params }: PageProps<"/datasets/[id]">): Promise<Metadata> {

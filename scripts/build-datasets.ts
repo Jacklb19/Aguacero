@@ -40,6 +40,14 @@ function daysFor(d: DatasetSpec): number {
 
 async function download(d: DatasetSpec, since: string): Promise<string[]> {
   const dir = join(CACHE, d.slug);
+  // REUSE_CACHE=1 reuses a previous download (useful when only the conversion changed).
+  if (process.env.REUSE_CACHE === "1" && existsSync(dir)) {
+    const cached = readdirSync(dir).filter((f) => f.endsWith(".csv")).sort().map((f) => join(dir, f));
+    if (cached.length > 0) {
+      log(`  ${d.slug}: reusing ${cached.length} cached pages`);
+      return cached;
+    }
+  }
   rmSync(dir, { recursive: true, force: true });
   mkdirSync(dir, { recursive: true });
   const headers: Record<string, string> = {};
@@ -132,7 +140,7 @@ async function build(d: DatasetSpec) {
   const hash = createHash("sha256").update(readFileSync(tmp)).digest("hex").slice(0, 10);
   const finalName = `${d.slug}.${hash}.parquet`;
   for (const old of readdirSync(PUBLIC_DATA)) {
-    if (old.startsWith(`${d.slug}.`) && old.endsWith(".parquet") && old !== finalName) {
+    if (/^[w-]+.[0-9a-f]{10}.parquet$/.test(old) && old.startsWith(`${d.slug}.`) && old !== finalName) {
       rmSync(join(PUBLIC_DATA, old));
     }
   }

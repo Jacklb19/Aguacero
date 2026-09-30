@@ -1,0 +1,61 @@
+{
+  "sample": false,
+  "title": "Monthly rainfall normals",
+  "location": "Bogotá (El Dorado airport station)",
+  "period": "1991-2020",
+  "unit": "mm",
+  "annual": 877.3,
+  "months": [
+    {
+      "label": "Jan",
+      "value": 32.9
+    },
+    {
+      "label": "Feb",
+      "value": 51.4
+    },
+    {
+      "label": "Mar",
+      "value": 83.4
+    },
+    {
+      "label": "Apr",
+      "value": 116.7
+    },
+    {
+      "label": "May",
+      "value": 109
+    },
+    {
+      "label": "Jun",
+      "value": 57.4
+    },
+    {
+      "label": "Jul",
+      "value": 48.6
+    },
+    {
+      "label": "Aug",
+      "value": 44.3
+    },
+    {
+      "label": "Sep",
+      "value": 56.7
+    },
+    {
+      "label": "Oct",
+      "value": 108.2
+    },
+    {
+      "label": "Nov",
+      "value": 107.2
+    },
+    {
+      "label": "Dec",
+      "value": 61.4
+    }
+  ],
+  "source": "IDEAM climatological normals, dataset nsz2-kzcq on datos.gov.co, station 21205791.",
+  "sourceUrl": "https://www.datos.gov.co/d/nsz2-kzcq",
+  "generatedAt": "2026-09-30T01:09:52.890Z"
+}

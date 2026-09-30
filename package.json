@@ -1,0 +1,55 @@
+{
+  "name": "aguacero",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/copy-duckdb-assets.mjs && next dev",
+    "build": "node scripts/copy-duckdb-assets.mjs && next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:contract": "vitest run --config vitest.contract.config.ts",
+    "e2e": "playwright test",
+    "data:build": "tsx scripts/build-datasets.ts",
+    "data:hero": "tsx scripts/build-hero.ts"
+  },
+  "dependencies": {
+    "@duckdb/duckdb-wasm": "1.33.1-dev57.0",
+    "@tanstack/react-virtual": "^3.14.13",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.48.0",
+    "next": "16.3.6",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "recharts": "^3.10.1",
+    "server-only": "^0.0.1",
+    "tailwind-merge": "^3.7.0",
+    "web-vitals": "^6.2.2",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@duckdb/node-api": "1.5.6-r.1",
+    "@playwright/test": "^1.63.0",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^24.19.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.1.1",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.6",
+    "jsdom": "^30.1.1",
+    "prettier": "^3.9.9",
+    "tailwindcss": "^4",
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "vitest": "^5.0.2"
+  },
+  "packageManager": "pnpm@12.8.1",
+  "engines": {
+    "node": ">=20.9"
+  }
+}

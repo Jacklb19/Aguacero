@@ -1,0 +1,303 @@
+@import "tailwindcss";
+
+/* Design tokens: see README §5.3 and docs/DESIGN_NOTES.md */
+:root {
+  --fog: #e8eeea;
+  --paper: #f6f8f5;
+  --basalt: #1c2a31;
+  --ash: #4a5a61;
+  --line: #c7d2cc;
+  --line-strong: #8a9b93;
+  --river: #17607a;
+  --river-deep: #0f4a5e;
+  --mora: #a3245f;
+  --frailejon: #7f9c6b;
+  --on-river: #f6f8f5;
+  --shadow-pop: 0 8px 24px -8px rgb(28 42 49 / 0.28);
+
+  /* Sequential rainfall ramp (YlGnBu, 7 classes) */
+  --seq-1: #ffffcc;
+  --seq-2: #c7e9b4;
+  --seq-3: #7fcdbb;
+  --seq-4: #41b6c4;
+  --seq-5: #1d91c0;
+  --seq-6: #225ea8;
+  --seq-7: #0c2c84;
+
+  /* Benchmark runners (Okabe-Ito based) */
+  --runner-main: #1c2a31;
+  --runner-worker-copy: #e69f00;
+  --runner-worker-transfer: #56b4e9;
+  --runner-worker-pool-sab: #009e73;
+  --runner-duckdb-st: #0072b2;
+  --runner-duckdb-mt: #cc79a7;
+  --runner-server: #d55e00;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fog: #14232a;
+    --paper: #1b2e36;
+    --basalt: #e4ece8;
+    --ash: #a7b8b0;
+    --line: #2e434c;
+    --line-strong: #6b8189;
+    --river: #6db7cf;
+    --river-deep: #8cc8dc;
+    --mora: #e56aa0;
+    --on-river: #14232a;
+    --shadow-pop: 0 8px 24px -8px rgb(0 0 0 / 0.5);
+    /* Dark ramp: classes 2..7 of YlGnBu re-interpolated to 7 steps, reversed so
+       "more" stays visually stronger against a dark background. */
+    --seq-1: #3d5a66;
+    --seq-2: #1d6fa0;
+    --seq-3: #1d91c0;
+    --seq-4: #41b6c4;
+    --seq-5: #7fcdbb;
+    --seq-6: #c7e9b4;
+    --seq-7: #ffffcc;
+    --runner-main: #e4ece8;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"],
+[data-theme="dark"] {
+  --fog: #14232a;
+  --paper: #1b2e36;
+  --basalt: #e4ece8;
+  --ash: #a7b8b0;
+  --line: #2e434c;
+  --line-strong: #6b8189;
+  --river: #6db7cf;
+  --river-deep: #8cc8dc;
+  --mora: #e56aa0;
+  --on-river: #14232a;
+  --shadow-pop: 0 8px 24px -8px rgb(0 0 0 / 0.5);
+  --seq-1: #3d5a66;
+  --seq-2: #1d6fa0;
+  --seq-3: #1d91c0;
+  --seq-4: #41b6c4;
+  --seq-5: #7fcdbb;
+  --seq-6: #c7e9b4;
+  --seq-7: #ffffcc;
+  --runner-main: #e4ece8;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-fog: var(--fog);
+  --color-paper: var(--paper);
+  --color-basalt: var(--basalt);
+  --color-ash: var(--ash);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-river: var(--river);
+  --color-river-deep: var(--river-deep);
+  --color-mora: var(--mora);
+  --color-frailejon: var(--frailejon);
+  --color-on-river: var(--on-river);
+
+  --font-heading: var(--font-bitter), Georgia, serif;
+  --font-body: var(--font-atkinson), system-ui, sans-serif;
+  --font-code: var(--font-atkinson-mono), ui-monospace, monospace;
+
+  --text-display: clamp(2.5rem, 1.4rem + 4vw, 4.25rem);
+  --text-display--line-height: 1.05;
+  --text-h1: clamp(2rem, 1.4rem + 2.2vw, 3rem);
+  --text-h1--line-height: 1.1;
+  --text-h2: 1.75rem;
+  --text-h2--line-height: 1.2;
+  --text-h3: 1.3rem;
+  --text-h3--line-height: 1.3;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.6;
+  --text-small: 0.9375rem;
+  --text-small--line-height: 1.5;
+  --text-tiny: 0.8125rem;
+  --text-tiny--line-height: 1.4;
+
+  --radius-control: 6px;
+  --radius-pop: 12px;
+
+  --shadow-pop: var(--shadow-pop);
+
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 60rem;
+  --breakpoint-lg: 80rem;
+}
+
+@layer base {
+  html {
+    background: var(--fog);
+    color: var(--basalt);
+    font-family: var(--font-body);
+    font-size: 100%;
+    hyphens: none;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--fog);
+    font-size: var(--text-body);
+    line-height: 1.6;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    text-wrap: balance;
+    color: var(--basalt);
+  }
+  p {
+    text-wrap: pretty;
+  }
+  code,
+  kbd,
+  pre,
+  textarea.code {
+    font-family: var(--font-code);
+  }
+  :focus-visible {
+    outline: 2px solid var(--river);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--river);
+    color: var(--on-river);
+  }
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  .container-page {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 4vw, 3rem);
+  }
+  .prose-measure {
+    max-width: 68ch;
+  }
+  .prose-link,
+  .prose a {
+    color: var(--river);
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+  .prose-link:hover,
+  .prose a:hover {
+    color: var(--river-deep);
+  }
+  .prose p + p {
+    margin-top: 1rem;
+  }
+  .figure-inline {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Disclosure: native details with a rotating chevron */
+  details.disclosure > summary {
+    cursor: pointer;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 44px;
+    color: var(--river);
+  }
+  details.disclosure > summary::-webkit-details-marker {
+    display: none;
+  }
+  details.disclosure > summary::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    transform: rotate(-45deg);
+    transition: transform 200ms ease;
+  }
+  details.disclosure[open] > summary::before {
+    transform: rotate(45deg);
+  }
+
+  /* Hyetograph: bars hang from the top axis */
+  .hyeto-bar {
+    transform-origin: top;
+    border-radius: 0 0 3px 3px;
+    /* Edge keeps pale classes at >= 3:1 against the page (WCAG 1.4.11). */
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--basalt) 40%, transparent);
+  }
+  .hyeto-animate .hyeto-bar {
+    animation: hyeto-fall 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: calc(var(--i) * 45ms);
+  }
+  .seq-1 { background: var(--seq-1); }
+  .seq-2 { background: var(--seq-2); }
+  .seq-3 { background: var(--seq-3); }
+  .seq-4 { background: var(--seq-4); }
+  .seq-5 { background: var(--seq-5); }
+  .seq-6 { background: var(--seq-6); }
+  .seq-7 { background: var(--seq-7); }
+
+  .pulse-late {
+    animation: pulse-late 1.2s ease-in-out 300ms infinite;
+  }
+}
+
+@keyframes hyeto-fall {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes pulse-late {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+  }
+  .hyeto-animate .hyeto-bar {
+    animation: none;
+  }
+  .pulse-late {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .hyeto-bar {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
+  :focus-visible {
+    outline-color: Highlight;
+  }
+}

@@ -76,6 +76,8 @@ export function Lab() {
       },
     );
     const valid = suiteSchema.parse(suite);
+    // Exposed for automated collection of reference results (scripts and e2e).
+    (window as Window & { __aguaceroSuite?: unknown }).__aguaceroSuite = valid;
     const blob = new Blob([JSON.stringify(valid, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

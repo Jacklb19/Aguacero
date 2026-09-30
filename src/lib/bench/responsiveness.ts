@@ -46,10 +46,15 @@ export class ResponsivenessMonitor {
     const open = performance.now() - this.last;
     if (open > this.peak) this.peak = open;
     if (open > 50) this.gapBlocked += open;
+    for (const e of this.observer?.takeRecords() ?? []) this.longTaskMs += e.duration;
     this.observer?.disconnect();
     this.observer = null;
     return {
-      blockedMs: this.longTasksSupported ? Math.max(this.longTaskMs, 0) : this.gapBlocked,
+      // A long task that ends right as the run ends may not be reported yet, so the frame-gap
+      // estimate is the floor (this fixes the main runner reading 0 ms).
+      blockedMs: this.longTasksSupported
+        ? Math.max(this.longTaskMs, this.gapBlocked)
+        : this.gapBlocked,
       peakFrameGapMs: this.peak,
     };
   }

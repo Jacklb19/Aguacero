@@ -112,9 +112,9 @@ export const datasets: DatasetSpec[] = [
     ),
     presets: [
       {
-        id: "wettest-months",
-        question: "Which months are wettest?",
-        sql: "SELECT month(observed_at) AS month, round(sum(value), 1) AS rainfall_mm\nFROM data\nGROUP BY month\nORDER BY month;",
+        id: "wettest-days",
+        question: "Which days were wettest this month?",
+        sql: "SELECT strftime(date_trunc('day', observed_at), '%d %b') AS day,\n       round(sum(value) / count(DISTINCT station_code), 1) AS mm_per_station\nFROM data\nGROUP BY date_trunc('day', observed_at)\nORDER BY date_trunc('day', observed_at);",
       },
       {
         id: "top-stations",

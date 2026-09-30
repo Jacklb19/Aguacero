@@ -58,7 +58,17 @@ export async function initEngine(opts: InitOptions = {}): Promise<Engine> {
   const bundle = await duckdb.selectBundle(selection);
   const worker = new Worker(bundle.mainWorker!);
   const db = new duckdb.AsyncDuckDB(new duckdb.VoidLogger(), worker);
-  await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+  // A worker that fails to load never answers; fail fast instead of hanging.
+  const failed = new Promise<never>((_, reject) => {
+    worker.addEventListener("error", () => reject(new Error("The engine worker failed to load.")));
+    setTimeout(() => reject(new Error("The engine took too long to start.")), 60_000);
+  });
+  try {
+    await Promise.race([db.instantiate(bundle.mainModule, bundle.pthreadWorker), failed]);
+  } catch (err) {
+    worker.terminate();
+    throw err;
+  }
   const name = nameOf(bundle.mainModule);
   const threads =
     name === "coi"
@@ -69,8 +79,29 @@ export async function initEngine(opts: InitOptions = {}): Promise<Engine> {
     ...(name === "coi" ? { maximumThreads: threads } : {}),
   });
   const conn = await db.connect();
+  // Extensions are self-hosted so isolated pages make no third-party requests.
+  await conn.query(
+    `SET custom_extension_repository = '${window.location.origin}/duckdb-ext';`,
+  );
   if (name === "coi") await conn.query(`SET threads = ${threads};`);
   return { db, conn, bundle: name, threads, worker };
+}
+
+/**
+ * Starts an engine that can read Parquet. The multi-thread build of this DuckDB-Wasm release
+ * cannot link the Parquet extension (shared-memory mismatch), so it falls back to one thread.
+ */
+export async function initParquetEngine(): Promise<Engine> {
+  const engine = await initEngine();
+  try {
+    await engine.conn.query("LOAD parquet;");
+    return engine;
+  } catch {
+    await terminate(engine);
+  }
+  const single = await initEngine({ singleThread: true });
+  await single.conn.query("LOAD parquet;");
+  return single;
 }
 
 export async function registerParquet(engine: Engine, name: string, url: string): Promise<void> {

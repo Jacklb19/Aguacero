@@ -55,5 +55,15 @@ export class ResponsivenessMonitor {
   }
 }
 
+/** Yields to the browser so it can paint. rAF does not fire in hidden tabs, so a timeout backs it up. */
 export const nextFrame = () =>
-  new Promise<void>((r) => requestAnimationFrame(() => setTimeout(r, 0)));
+  new Promise<void>((resolve) => {
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      setTimeout(resolve, 0);
+    };
+    requestAnimationFrame(finish);
+    setTimeout(finish, 50);
+  });

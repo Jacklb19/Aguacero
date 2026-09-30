@@ -136,8 +136,8 @@ export function Explorer() {
     }
     setEngineState({ kind: "loading" });
     try {
-      const { initEngine } = await import("@/lib/duckdb/engine");
-      const engine = await initEngine();
+      const { initParquetEngine } = await import("@/lib/duckdb/engine");
+      const engine = await initParquetEngine();
       engineRef.current = engine;
       await ensureView(engine, datasetSlug);
       setEngineState({ kind: "ready", engine });

@@ -5,6 +5,8 @@ const isolation = [
   { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
 ];
 
+const corp = { key: "Cross-Origin-Resource-Policy", value: "same-origin" };
+
 const immutable = [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }];
 
 const nextConfig: NextConfig = {
@@ -30,8 +32,10 @@ const nextConfig: NextConfig = {
       { source: "/explore/:path*", headers: isolation },
       { source: "/lab", headers: isolation },
       { source: "/lab/:path*", headers: isolation },
-      // Versioned paths, safe to cache forever.
-      { source: "/duckdb/:path*", headers: immutable },
+      // Worker scripts started from an isolated page must carry COEP themselves.
+      { source: "/duckdb/:path*", headers: [...immutable, ...isolation, corp] },
+      { source: "/duckdb-ext/:path*", headers: [...immutable, corp] },
+      { source: "/_next/static/:path*", headers: [corp, isolation[1]!] },
       { source: "/data/:path*", headers: immutable },
     ];
   },

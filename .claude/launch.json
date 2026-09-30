@@ -1,0 +1,6 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    { "name": "aguacero-prod", "runtimeExecutable": "pnpm", "runtimeArgs": ["start", "-p", "3100"], "port": 3100 }
+  ]
+}

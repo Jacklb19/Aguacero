@@ -82,3 +82,25 @@ so bars meet WCAG 1.4.11 without changing the specified ramp.
 Vercel builds failed with "took more than 60 seconds" on `/datasets` and `/datasets/[id]`.
 `staticPageGenerationTimeout` is now 300 s, and `/datasets/[id]` returns no static params, so
 each dataset page renders on its first visit and is then cached and revalidated hourly.
+
+## 2026-09-29: Parquet slices
+
+`pnpm data:build` produced `precipitation` (2,179,620 rows, last 30 days, 9.3 MB) and
+`air-temperature` (920,529 rows, last 60 days, 3.2 MB), ZSTD, sorted by department and time.
+Download via paged CSV (`$limit` 500,000, `$order=:id`) took about 4 minutes per page.
+
+## 2026-09-29: Parquet extension is self-hosted; explorer falls back to one thread
+
+This DuckDB-Wasm release does not bundle Parquet; it autoloads the extension from
+extensions.duckdb.org. That is a third-party request on an isolated page, so the extension
+files are committed under `public/duckdb-ext/v1.5.4/` and `custom_extension_repository`
+points there. The `wasm_threads` Parquet extension fails to link with the `coi` bundle
+("mismatch in shared state of memory"), so the explorer tries multi-thread first and falls
+back to the single-thread `eh` bundle, and says which one it uses. The lab's multi-thread
+database runner does not need Parquet and does use `coi`.
+
+## 2026-09-29: COEP on worker scripts
+
+Dedicated workers started from an isolated page must be served with COEP themselves, or the
+browser blocks them (`ERR_BLOCKED_BY_RESPONSE`). `/duckdb/*` and `/_next/static/*` now send
+COEP and `Cross-Origin-Resource-Policy: same-origin`.

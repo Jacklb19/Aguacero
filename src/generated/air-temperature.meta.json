@@ -1,0 +1,55 @@
+{
+  "slug": "air-temperature",
+  "id": "sbwg-7ju4",
+  "file": "/data/air-temperature.4e95c2fe7b.parquet",
+  "rows": 920529,
+  "bytes": 3306044,
+  "from": "2026-08-12 00:00:00",
+  "to": "2026-09-28 23:58:00",
+  "days": 60,
+  "generatedAt": "2026-09-30T01:35:56.917Z",
+  "sourceUrl": "https://www.datos.gov.co/d/sbwg-7ju4",
+  "license": "Creative Commons Attribution-ShareAlike 4.0 International",
+  "columns": [
+    {
+      "name": "observed_at",
+      "type": "TIMESTAMP",
+      "description": "Local time of the reading (UTC-5)."
+    },
+    {
+      "name": "station_code",
+      "type": "VARCHAR",
+      "description": "IDEAM station code."
+    },
+    {
+      "name": "station",
+      "type": "VARCHAR",
+      "description": "Station name."
+    },
+    {
+      "name": "department",
+      "type": "VARCHAR",
+      "description": "Department, spelling normalized."
+    },
+    {
+      "name": "municipality",
+      "type": "VARCHAR",
+      "description": "Municipality."
+    },
+    {
+      "name": "value",
+      "type": "DOUBLE",
+      "description": "air temperature (°C)."
+    },
+    {
+      "name": "latitude",
+      "type": "DOUBLE",
+      "description": "Decimal degrees."
+    },
+    {
+      "name": "longitude",
+      "type": "DOUBLE",
+      "description": "Decimal degrees."
+    }
+  ]
+}

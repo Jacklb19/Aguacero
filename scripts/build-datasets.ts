@@ -140,7 +140,7 @@ async function build(d: DatasetSpec) {
   const hash = createHash("sha256").update(readFileSync(tmp)).digest("hex").slice(0, 10);
   const finalName = `${d.slug}.${hash}.parquet`;
   for (const old of readdirSync(PUBLIC_DATA)) {
-    if (/^[w-]+.[0-9a-f]{10}.parquet$/.test(old) && old.startsWith(`${d.slug}.`) && old !== finalName) {
+    if (/^[\w-]+\.[0-9a-f]{10}\.parquet$/.test(old) && old.startsWith(`${d.slug}.`) && old !== finalName) {
       rmSync(join(PUBLIC_DATA, old));
     }
   }
@@ -174,6 +174,13 @@ async function build(d: DatasetSpec) {
   };
   mkdirSync(GENERATED, { recursive: true });
   writeFileSync(join(GENERATED, `${d.slug}.meta.json`), JSON.stringify(meta, null, 2) + "\n");
+  // Index read by the explorer (src/lib/data-files.ts).
+  const indexPath = join(GENERATED, "data-files.json");
+  const index: Record<string, unknown> = existsSync(indexPath)
+    ? (JSON.parse(readFileSync(indexPath, "utf8")) as Record<string, unknown>)
+    : {};
+  index[d.slug] = meta;
+  writeFileSync(indexPath, JSON.stringify(index, null, 2) + "\n");
   log(`${d.slug}: ${meta.rows} rows, ${(bytes / 1024 / 1024).toFixed(1)} MB -> ${meta.file}`);
   conn.closeSync();
 }
